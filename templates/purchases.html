@@ -1,33 +1,62 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>Previous Purchases</title>
-{% endblock %}
+{% block title %}Purchase History - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="my-10">
-        <h1 class="text-3xl font-bold mb-6 text-center">Your Previous Purchases</h1>
-        <div class="grid grid-cols-1 gap-6">
-            {% if purchases %}
-                {% for purchase in purchases %}
-                    <div class="card p-6 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <img src="{{ purchase.product.image if purchase.product.image else 'https://via.placeholder.com/80x80.png?text=Item' }}" alt="{{ purchase.product.title }}" class="w-20 h-20 rounded-lg object-cover">
-                            <div>
-                                <h3 class="font-bold text-lg">{{ purchase.product.title }}</h3>
-                                <p class="text-gray-600">${{ "%.2f"|format(purchase.product.price) }}</p>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Purchased on: {{ purchase.purchased_at.strftime('%B %d, %Y') }}</p>
-                        </div>
+<div class="container" style="max-width: 800px; margin: 2rem auto;">
+    <h2 class="text-center mb-4" style="color: #2d5a27;">Your Purchase History</h2>
+
+    {% if purchases %}
+        <div class="purchase-list">
+            {% for purchase in purchases %}
+                <div class="purchase-card">
+                    <div class="purchase-header">
+                        <strong>{{ loop.index }}. {{ purchase.product.title }}</strong>
+                        <span style="float: right; color: #888;">{{ purchase.purchased_at.strftime('%Y-%m-%d %H:%M') }}</span>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-20">
-                    <p class="text-gray-500 text-xl">You have not made any purchases yet.</p>
+                    <div class="purchase-body">
+                        <p><strong>Category:</strong> {{ purchase.product.category or 'N/A' }}</p>
+                        <p><strong>Price:</strong> ${{ '%.2f'|format(purchase.product.price) }}</p>
+                        {% if purchase.product.image %}
+                            <img src="{{ purchase.product.image }}" alt="{{ purchase.product.title }}" style="max-width: 200px; border-radius: 5px;">
+                        {% endif %}
+                    </div>
                 </div>
-            {% endif %}
+            {% endfor %}
         </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            You have not purchased any products yet. <a href="{{ url_for('home') }}">Start shopping now!</a>
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard', user_id=user_id) }}" class="btn btn-outline-success">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
     </div>
+</div>
+
+<style>
+.purchase-card {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.purchase-header {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.purchase-body p {
+    margin: 5px 0;
+}
+
+.purchase-body img {
+    margin-top: 10px;
+}
+</style>
 {% endblock %}

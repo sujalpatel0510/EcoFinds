@@ -1,34 +1,581 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>Your Cart</title>
-{% endblock %}
+{% block title %}Shopping Cart - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="my-10">
-        <h1 class="text-3xl font-bold mb-6 text-center">Your Shopping Cart</h1>
-        <div class="grid grid-cols-1 gap-6">
-            {% if cart_items %}
-                {% for item in cart_items %}
-                    <div class="card p-6 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <img src="{{ item.product.image if item.product.image else 'https://via.placeholder.com/80x80.png?text=Item' }}" alt="{{ item.product.title }}" class="w-20 h-20 rounded-lg object-cover">
-                            <div>
-                                <h3 class="font-bold text-lg">{{ item.product.title }}</h3>
-                                <p class="text-gray-600">${{ "%.2f"|format(item.product.price) }}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <a href="{{ url_for('purchase', user_id=user_id, product_id=item.product.id) }}" class="btn btn-primary">Purchase</a>
-                            <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" class="btn btn-danger">Remove</a>
+<style>
+    /* Enhanced CSS Styles */
+    .cart-container {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    /* Header Styles */
+    .cart-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: fadeInDown 0.6s ease;
+    }
+
+    .cart-icon-main {
+        font-size: 3.5rem;
+        background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cart-title {
+        color: #1a3d16;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    .cart-subtitle {
+        color: #6b7280;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    /* Cart Item Styles */
+    .cart-items {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cart-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.05), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .cart-item:hover::before {
+        left: 100%;
+    }
+
+    .cart-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        border-color: rgba(76, 175, 80, 0.2);
+    }
+
+    /* Product Image Styles */
+    .product-image-wrapper {
+        width: 140px;
+        height: 140px;
+        flex-shrink: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 2rem;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .cart-item:hover .product-image-wrapper img {
+        transform: scale(1.1);
+    }
+
+    .product-image-placeholder {
+        color: #9ca3af;
+        font-size: 2.5rem;
+    }
+
+    /* Product Info Styles */
+    .product-info {
+        flex: 1;
+        padding-right: 1rem;
+    }
+
+    .product-title {
+        margin-bottom: 0.5rem;
+        color: #1a3d16;
+        font-size: 1.3rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .cart-item:hover .product-title {
+        color: #4CAF50;
+    }
+
+    .product-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+    }
+
+    .product-description {
+        color: #6b7280;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
+    }
+
+    .product-price {
+        font-weight: 700;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
+    /* Action Buttons */
+    .cart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-left: auto;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-outline {
+        background: white;
+        color: #4CAF50;
+        border: 2px solid #4CAF50;
+    }
+
+    .btn-outline:hover {
+        background: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #45a049 0%, #5cb85c 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-danger {
+        background: #ef4444;
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+    }
+
+    .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    /* Cart Summary */
+    .cart-summary {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+        border: 2px solid rgba(76, 175, 80, 0.1);
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .summary-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #1a3d16;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-row:last-of-type {
+        border-bottom: none;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+        border-top: 2px solid rgba(76, 175, 80, 0.2);
+    }
+
+    .summary-label {
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    .summary-value {
+        font-weight: 600;
+        color: #374151;
+        font-size: 1.1rem;
+    }
+
+    .summary-total {
+        font-size: 1.8rem !important;
+        background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .summary-info {
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: rgba(76, 175, 80, 0.05);
+        border-radius: 12px;
+    }
+
+    /* Empty Cart */
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .empty-cart-icon {
+        font-size: 5rem;
+        color: #d1d5db;
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
+    .empty-cart h3 {
+        color: #6b7280;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .empty-cart p {
+        color: #9ca3af;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    /* Eco Message */
+    .eco-message {
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(102, 187, 106, 0.05) 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        margin-top: 2rem;
+        border: 2px solid rgba(76, 175, 80, 0.1);
+        animation: fadeInUp 1s ease;
+    }
+
+    .eco-icon {
+        font-size: 2.5rem;
+        color: #4CAF50;
+        margin-bottom: 1rem;
+        animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .eco-title {
+        color: #1a3d16;
+        margin-bottom: 0.75rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+
+    .eco-text {
+        color: #6b7280;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /* Continue Shopping */
+    .continue-shopping {
+        text-align: center;
+        margin-top: 2rem;
+        animation: fadeInUp 0.9s ease;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .cart-container {
+            padding: 0 0.75rem;
+        }
+
+        .cart-title {
+            font-size: 2rem;
+        }
+
+        .cart-item {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.25rem;
+        }
+
+        .product-image-wrapper {
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-info {
+            padding-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        .cart-actions {
+            flex-direction: row;
+            justify-content: center;
+            margin-left: 0;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .cart-summary {
+            padding: 1.5rem;
+        }
+
+        .summary-total {
+            font-size: 1.5rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cart-title {
+            font-size: 1.75rem;
+        }
+
+        .product-image-wrapper {
+            width: 120px;
+            height: 120px;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+
+<div class="cart-container">
+    <!-- Header -->
+    <div class="cart-header">
+        <i class="fas fa-shopping-cart cart-icon-main"></i>
+        <h1 class="cart-title">Your Shopping Cart</h1>
+        <p class="cart-subtitle">Review your sustainable selections</p>
+    </div>
+
+    {% if cart_items %}
+        <!-- Cart Items -->
+        <div class="cart-items">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image }}" alt="{{ item.product.title }}">
+                        {% else %}
+                            <i class="fas fa-image product-image-placeholder"></i>
+                        {% endif %}
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="product-info">
+                        <h3 class="product-title">{{ item.product.title }}</h3>
+                        {% if item.product.category %}
+                            <span class="product-category">{{ item.product.category }}</span>
+                        {% endif %}
+                        <p class="product-description">
+                            {{ item.product.description[:100] if item.product.description else 'No description available' }}
+                            {% if item.product.description and item.product.description|length > 100 %}...{% endif %}
+                        </p>
+                        <div class="product-price">
+                            ${{ "%.2f"|format(item.product.price) }}
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-20">
-                    <p class="text-gray-500 text-xl">Your cart is empty.</p>
+
+                    <!-- Actions -->
+                    <div class="cart-actions">
+                        <a href="{{ url_for('product_detail', product_id=item.product.id) }}" class="btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{{ url_for('purchase', user_id=user_id, product_id=item.product.id) }}" 
+                           class="btn btn-primary" 
+                           onclick="return confirm('Purchase this item?')">
+                            <i class="fas fa-shopping-bag"></i> Buy
+                        </a>
+                        <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" 
+                           class="btn btn-danger" 
+                           onclick="return confirm('Remove from cart?')">
+                            <i class="fas fa-trash"></i> Remove
+                        </a>
+                    </div>
                 </div>
-            {% endif %}
+            {% endfor %}
         </div>
+
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+            <h3 class="summary-title">
+                <i class="fas fa-calculator"></i> Order Summary
+            </h3>
+            <div class="summary-row">
+                <span class="summary-label">Total Items:</span>
+                <span class="summary-value">{{ cart_items|length }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Subtotal:</span>
+                <span class="summary-value">${{ "%.2f"|format(total_price) }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Eco Savings:</span>
+                <span class="summary-value" style="color: #4CAF50;">-${{ "%.2f"|format(total_price * 0.1) }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label" style="font-size: 1.2rem;">Total:</span>
+                <span class="summary-value summary-total">${{ "%.2f"|format(total_price * 0.9) }}</span>
+            </div>
+            <div class="summary-info">
+                <i class="fas fa-info-circle"></i> Items will be purchased individually. Click "Buy" on each item to complete purchase.
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Empty Cart -->
+        <div class="empty-cart">
+            <i class="fas fa-shopping-cart empty-cart-icon"></i>
+            <h3>Your cart is empty</h3>
+            <p>Discover amazing second-hand treasures and add them to your cart!</p>
+            <a href="{{ url_for('home') }}" class="btn btn-primary">
+                <i class="fas fa-store"></i> Start Shopping
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Continue Shopping Button -->
+    <div class="continue-shopping">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Continue Shopping
+        </a>
     </div>
+
+    <!-- Sustainability Message -->
+    <div class="eco-message">
+        <i class="fas fa-recycle eco-icon"></i>
+        <h3 class="eco-title">🌍 Making a Difference Together</h3>
+        <p class="eco-text">
+            Every second-hand purchase saves resources and reduces waste. 
+            You're not just shopping – you're contributing to a more sustainable future!
+        </p>
+    </div>
+</div>
 {% endblock %}

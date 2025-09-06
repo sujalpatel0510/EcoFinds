@@ -3,189 +3,872 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EcoFinds{% endblock %}</title>
+    <title>{% block title %}EcoFinds - Sustainable Marketplace{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* A utility-first CSS system for the hackathon project, all within one file. */
-        /* This approach centralizes styles to prevent duplication and ensure consistency. */
-        
-        /* Global Reset & Typography */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-green: #4CAF50;
+            --primary-dark: #2d5a27;
+            --secondary-green: #66BB6A;
+            --light-green: #81C784;
+            --accent-purple: #9C27B0;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-green: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+            --shadow-2xl: 0 25px 50px rgba(0,0,0,0.15);
+            --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        ::selection {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-green);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            background-color: #f7fafc;
-            color: #2d3748;
+            color: #1a202c;
+            background: #f7fafc;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
-       .container {
-            max-width: 960px;
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.05;
+            z-index: -2;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.08; }
+        }
+
+        /* Floating Particles Effect */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(156, 39, 176, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(102, 187, 106, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: floatAnimation 20s ease-in-out infinite;
+        }
+
+        @keyframes floatAnimation {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
-        
-        /* Layout Utilities */
-       .flex {
+
+        /* Enhanced Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 1px 40px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.1);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            position: relative;
         }
-       .flex-col {
-            flex-direction: column;
+
+        /* Enhanced Logo */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-green);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition-base);
+            position: relative;
         }
-       .items-center {
+
+        .logo i {
+            font-size: 2rem;
+            background: var(--gradient-green);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: leafFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes leafFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(10deg); }
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo::after {
+            content: 'BETA';
+            position: absolute;
+            top: -8px;
+            right: -35px;
+            background: var(--gradient-green);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Enhanced Navigation */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
             align-items: center;
         }
-       .justify-between {
-            justify-content: space-between;
+
+        .nav-links li {
+            position: relative;
         }
-       .gap-4 {
-            gap: 16px;
-        }
-       .grid {
-            display: grid;
-        }
-       .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-        @media (min-width: 640px) {
-           .sm\:grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-        @media (min-width: 768px) {
-           .md\:grid-cols-3 {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-        
-        /* Components */
-       .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 8px;
+
+        .nav-links a {
             text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-       .btn-primary {
-            background-color: #4a5568;
-            color: #fff;
-        }
-       .btn-primary:hover {
-            background-color: #2d3748;
-        }
-       .btn-danger {
-            background-color: #e53e3e;
-            color: #fff;
-        }
-       .btn-danger:hover {
-            background-color: #c53030;
-        }
-       .btn-secondary {
-            background-color: #cbd5e0;
-            color: #2d3748;
-        }
-       .btn-secondary:hover {
-            background-color: #a0aec0;
-        }
-        
-       .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-base);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
             overflow: hidden;
         }
-       .card-body {
-            padding: 20px;
-        }
-        
-       .form-group {
-            margin-bottom: 20px;
-        }
-       .form-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-       .form-input {
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
+            height: 100%;
+            background: var(--gradient-green);
+            opacity: 0.1;
+            transition: left 0.3s ease;
         }
-        
-        /* Header */
-       .header {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .nav-links a:hover::before {
+            left: 0;
         }
-       .header-logo {
-            font-weight: bold;
-            font-size: 24px;
-            color: #4a5568;
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a i {
+            font-size: 1rem;
+            transition: var(--transition-base);
+        }
+
+        .nav-links a:hover i {
+            transform: rotate(360deg);
+        }
+
+        /* Cart Badge */
+        .nav-links a[href*="cart"] {
+            position: relative;
+        }
+
+        .nav-links a[href*="cart"]::after {
+            content: '2';
+            position: absolute;
+            top: 0;
+            right: 5px;
+            background: #ff4757;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 140px);
+            padding: 3rem 0;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Card Styles */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition-base);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-green);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Enhanced Form Styles */
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition-base);
+            background: white;
+            font-weight: 500;
+        }
+
+        .form-control:hover {
+            border-color: #cbd5e0;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
             text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-base);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
         }
-       .header-nav a {
-            margin-left: 20px;
-            text-decoration: none;
-            color: #4a5568;
-            font-weight: bold;
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
-        
-        /* Flash messages */
-       .flash-message {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            font-weight: bold;
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
-       .flash-success {
-            background-color: #c6f6d5;
-            color: #2f855a;
+
+        .btn-primary {
+            background: var(--gradient-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
         }
-       .flash-danger {
-            background-color: #fed7d7;
-            color: #c53030;
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096, #4a5568);
+            color: white;
+            box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(113, 128, 150, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fc5c7d, #6a82fb);
+            color: white;
+            box-shadow: 0 4px 15px rgba(252, 92, 125, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(252, 92, 125, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-outline::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--gradient-green);
+            transition: width 0.3s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .btn-outline:hover::after {
+            width: 100%;
+        }
+
+        .btn-outline:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Enhanced Alert Styles */
+        .alert {
+            padding: 1.25rem 1.75rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: currentColor;
+            opacity: 0.5;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+            color: #1b5e20;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(252, 92, 125, 0.1), rgba(106, 130, 251, 0.1));
+            color: #c62828;
+            border: 1px solid rgba(252, 92, 125, 0.2);
+        }
+
+        /* Enhanced Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: var(--transition-base);
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: var(--gradient-green);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card:hover::before {
+            opacity: 0.03;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e0;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-base);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 1.75rem;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradient-green);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+            color: var(--primary-dark);
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-green);
+        }
+
+        .footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            animation: leafFloat 3s ease-in-out infinite;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--gradient-green);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                padding: 1rem 0;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .logo::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .d-flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .align-center { align-items: center; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-green);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus Styles */
+        *:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
         }
     </style>
-    {% block head %}{% endblock %}
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header class="header flex items-center justify-between">
-        <a href="{{ url_for('home') }}" class="header-logo">EcoFinds</a>
-        <nav class="header-nav">
-            {% if session.get('user_id') %}
-                <a href="{{ url_for('dashboard', user_id=session['user_id']) }}">Dashboard</a>
-                <a href="{{ url_for('view_cart', user_id=session['user_id']) }}">Cart</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('signup') }}" class="btn btn-primary">Signup</a>
-            {% endif %}
-        </nav>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="{{ url_for('home') }}" class="logo">
+                    <i class="fas fa-leaf"></i>
+                    EcoFinds
+                </a>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a></li>
+                    {% if session.user_id %}
+                        <li><a href="{{ url_for('dashboard', user_id=session.user_id) }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="{{ url_for('add_product') }}"><i class="fas fa-plus-circle"></i> Add Product</a></li>
+                        <li><a href="{{ url_for('view_cart', user_id=session.user_id) }}"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                        <li><a href="{{ url_for('view_purchases', user_id=session.user_id) }}"><i class="fas fa-history"></i> Purchases</a></li>
+                        <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a href="{{ url_for('signup') }}"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">
+                            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        {% block content %}{% endblock %}
-    </div>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
-    <footer class="text-center py-8">
-        <p>&copy; {{ now.year }} EcoFinds. All Rights Reserved.</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <p>&copy; 2025 EcoFinds - Sustainable Marketplace</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.7;">
+                🌍 Making the world greener, one purchase at a time
+            </p>
+        </div>
     </footer>
 
-    {% block scripts %}{% endblock %}
+    <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and product cards
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.card, .product-card').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

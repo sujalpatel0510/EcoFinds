@@ -1,29 +1,44 @@
-{% extends "base.html" %}
-
-{% block head %}
-    <title>EcoFinds - Sign Up</title>
-{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Sign Up • EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="flex flex-col items-center py-20">
-        <div class="card p-8 w-full max-w-sm">
-            <h2 class="text-2xl font-bold text-center mb-6">Sign Up for EcoFinds</h2>
-            <form action="{{ url_for('signup') }}" method="POST">
-                <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-4">Sign Up</button>
-            </form>
-            <p class="text-center mt-4 text-sm">Already have an account? <a href="{{ url_for('login') }}" class="text-gray-600 font-bold">Login</a></p>
-        </div>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-sm p-4">
+        <h2 class="text-center mb-4">Create Account</h2>
+
+        <form method="post" action="{{ url_for('signup') }}">
+          <!-- Use Flask-WTF for CSRF protection if needed -->
+          
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password1" class="form-label">Password</label>
+            <input type="password" name="password1" id="password1" class="form-control" placeholder="Enter password" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password2" class="form-label">Confirm Password</label>
+            <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm password" required>
+          </div>
+
+          <button type="submit" class="btn btn-eco w-100">Sign Up</button>
+        </form>
+
+        <p class="text-center mt-3">
+          Already have an account? <a href="{{ url_for('login') }}">Log In</a>
+        </p>
+      </div>
     </div>
+  </div>
+</div>
 {% endblock %}

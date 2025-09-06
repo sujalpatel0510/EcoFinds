@@ -1,43 +1,95 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>Add New Product</title>
-{% endblock %}
+{% block title %}Add Product - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="flex flex-col items-center py-10">
-        <div class="card p-8 w-full max-w-xl">
-            <h2 class="text-2xl font-bold text-center mb-6">Add New Product</h2>
-            <form action="{{ url_for('add_product') }}" method="POST">
-                <div class="form-group">
-                    <label for="title" class="form-label">Product Title</label>
-                    <input type="text" id="title" name="title" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="category" class="form-label">Category</label>
-                    <select id="category" name="category" class="form-input">
-                        <option value="electronics">Electronics</option>
-                        <option value="books">Books</option>
-                        <option value="clothing">Clothing</option>
-                        <option value="home">Home Goods</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" class="form-input" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="price" class="form-label">Price ($)</label>
-                    <input type="number" step="0.01" id="price" name="price" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="image" class="form-label">Image URL (Placeholder)</label>
-                    <input type="url" id="image" name="image" class="form-input">
-                </div>
-                <input type="hidden" name="user_id" value="{{ session.get('user_id') }}">
-                <button type="submit" class="btn btn-primary w-full mt-4">Submit Listing</button>
-            </form>
+<div class="add-product-container" style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="text-center mb-3">
+            <i class="fas fa-plus-circle" style="font-size: 3rem; color: #4CAF50; margin-bottom: 1rem;"></i>
+            <h2 style="color: #2d5a27; margin-bottom: 0.5rem;">Add New Product</h2>
+            <p style="color: #666;">List your item and give it a new life</p>
         </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">
+                    <i class="fas fa-tag"></i> Product Title *
+                </label>
+                <input type="text" id="title" name="title" class="form-control" required 
+                       placeholder="Enter a descriptive title for your product">
+            </div>
+
+            <div class="form-group">
+                <label for="category">
+                    <i class="fas fa-list"></i> Category *
+                </label>
+                <select id="category" name="category" class="form-control" required>
+                    <option value="">Select a category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing & Fashion</option>
+                    <option value="Books">Books & Media</option>
+                    <option value="Home">Home & Garden</option>
+                    <option value="Sports">Sports & Outdoors</option>
+                    <option value="Toys">Toys & Games</option>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Health">Health & Beauty</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">
+                    <i class="fas fa-dollar-sign"></i> Price *
+                </label>
+                <input type="number" id="price" name="price" class="form-control" step="0.01" min="0" required 
+                       placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-align-left"></i> Description
+                </label>
+                <textarea id="description" name="description" class="form-control" rows="4" 
+                          placeholder="Describe your product's condition, features, and any other relevant details..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">
+                    <i class="fas fa-image"></i> Image URL
+                </label>
+                <input type="url" id="image" name="image" class="form-control" 
+                       placeholder="https://example.com/image.jpg (optional)">
+                <small style="color: #666; font-size: 0.8rem;">
+                    Tip: Upload your image to a service like Imgur and paste the direct link here
+                </small>
+            </div>
+
+            <input type="hidden" name="user_id" value="{{ session.user_id }}">
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                    <i class="fas fa-plus"></i> List Product
+                </button>
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
     </div>
+
+    <!-- Tips Section -->
+    <div class="card mt-3" style="background: rgba(76, 175, 80, 0.05);">
+        <h3 style="color: #2d5a27; margin-bottom: 1rem;">
+            <i class="fas fa-lightbulb"></i> Tips for a Great Listing
+        </h3>
+        <ul style="color: #666; line-height: 1.8;">
+            <li><strong>Clear Title:</strong> Use descriptive keywords that buyers would search for</li>
+            <li><strong>Honest Description:</strong> Be transparent about the item's condition</li>
+            <li><strong>Fair Price:</strong> Research similar items to price competitively</li>
+            <li><strong>Good Photos:</strong> Clear, well-lit images increase buyer interest</li>
+            <li><strong>Quick Response:</strong> Reply promptly to buyer inquiries</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}

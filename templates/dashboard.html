@@ -1,27 +1,114 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>Dashboard</title>
-{% endblock %}
+{% block title %}Dashboard - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="card p-8 my-10">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold">Welcome, {{ user.username }}</h2>
-            <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-secondary">Edit Profile</a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="font-bold text-lg mb-2">User Details</h3>
-                <p><strong>Username:</strong> {{ user.username }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Joined:</strong> {{ user.created_at.strftime('%B %d, %Y') }}</p>
+<div class="dashboard-container">
+    <div class="card">
+        <div class="text-center mb-3">
+            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #4CAF50, #45a049); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user" style="font-size: 2.5rem; color: white;"></i>
             </div>
-            <div>
-                <h3 class="font-bold text-lg mb-2">Your Activity</h3>
-                <a href="{{ url_for('view_purchases', user_id=user.id) }}" class="block mb-2 text-gray-600 hover:text-gray-800">View Previous Purchases</a>
-                <a href="{{ url_for('add_product') }}" class="block mb-2 text-gray-600 hover:text-gray-800">Add a New Product Listing</a>
+            <h2 style="color: #2d5a27; margin-bottom: 0.5rem;">Welcome, {{ user.username }}!</h2>
+            <p style="color: #666;">Manage your EcoFinds profile and listings</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <!-- Profile Information -->
+            <div class="card" style="background: rgba(76, 175, 80, 0.05);">
+                <h3 style="color: #2d5a27; margin-bottom: 1rem;">
+                    <i class="fas fa-user-circle"></i> Profile Information
+                </h3>
+                <div class="profile-info">
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Username:</strong> {{ user.username }}
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Email:</strong> {{ user.email }}
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Member Since:</strong> {{ user.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                    <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card" style="background: rgba(76, 175, 80, 0.05);">
+                <h3 style="color: #2d5a27; margin-bottom: 1rem;">
+                    <i class="fas fa-chart-bar"></i> Your Stats
+                </h3>
+                <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="stat-item text-center" style="padding: 1rem; background: white; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">{{ user.products|length }}</div>
+                        <div style="color: #666; font-size: 0.9rem;">Products Listed</div>
+                    </div>
+                    <div class="stat-item text-center" style="padding: 1rem; background: white; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">{{ user.purchases|length }}</div>
+                        <div style="color: #666; font-size: 0.9rem;">Purchases Made</div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions mt-3">
+            <h3 style="color: #2d5a27; margin-bottom: 1rem;">
+                <i class="fas fa-bolt"></i> Quick Actions
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <a href="{{ url_for('add_product') }}" class="btn btn-primary" style="padding: 1rem; text-align: center;">
+                    <i class="fas fa-plus" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                    Add New Product
+                </a>
+                <a href="{{ url_for('view_cart', user_id=user.id) }}" class="btn btn-secondary" style="padding: 1rem; text-align: center;">
+                    <i class="fas fa-shopping-cart" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                    View Cart
+                </a>
+                <a href="{{ url_for('view_purchases', user_id=user.id) }}" class="btn btn-outline" style="padding: 1rem; text-align: center;">
+                    <i class="fas fa-history" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                    Purchase History
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Products -->
+        {% if user.products %}
+        <div class="recent-products mt-3">
+            <h3 style="color: #2d5a27; margin-bottom: 1rem;">
+                <i class="fas fa-store"></i> Your Recent Products
+            </h3>
+            <div class="product-grid">
+                {% for product in user.products[:6] %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if product.image %}
+                                <img src="{{ product.image }}" alt="{{ product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-image"></i>
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <h4 class="product-title">{{ product.title }}</h4>
+                            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+                            <div class="d-flex gap-1">
+                                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+                                   class="btn btn-danger" style="flex: 1; font-size: 0.8rem;"
+                                   onclick="return confirm('Are you sure you want to delete this product?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
+</div>
 {% endblock %}

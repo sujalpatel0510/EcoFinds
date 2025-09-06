@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>EcoFinds - Login</title>
-{% endblock %}
+{% block title %}Login - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="flex flex-col items-center py-20">
-        <div class="card p-8 w-full max-w-sm">
-            <h2 class="text-2xl font-bold text-center mb-6">Login to EcoFinds</h2>
-            <form action="{{ url_for('login') }}" method="POST">
-                <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-4">Login</button>
-            </form>
-            <p class="text-center mt-4 text-sm">Don't have an account? <a href="{{ url_for('signup') }}" class="text-gray-600 font-bold">Sign Up</a></p>
+<div class="auth-container" style="max-width: 400px; margin: 2rem auto;">
+    <div class="card">
+        <div class="text-center mb-3">
+            <i class="fas fa-leaf" style="font-size: 3rem; color: #4CAF50; margin-bottom: 1rem;"></i>
+            <h2 style="color: #2d5a27; margin-bottom: 0.5rem;">Welcome Back</h2>
+            <p style="color: #666;">Sign in to your EcoFinds account</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+
+        <div class="text-center">
+            <p style="color: #666;">Don't have an account?</p>
+            <a href="{{ url_for('signup') }}" class="btn btn-outline">
+                <i class="fas fa-user-plus"></i> Create Account
+            </a>
         </div>
     </div>
+</div>
 {% endblock %}

@@ -1,42 +1,80 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <title>Edit {{ product.title }}</title>
-{% endblock %}
+{% block title %}Edit Product - EcoFinds{% endblock %}
 
 {% block content %}
-    <div class="flex flex-col items-center py-10">
-        <div class="card p-8 w-full max-w-xl">
-            <h2 class="text-2xl font-bold text-center mb-6">Edit Product: {{ product.title }}</h2>
-            <form action="{{ url_for('edit_product', product_id=product.id) }}" method="POST">
-                <div class="form-group">
-                    <label for="title" class="form-label">Product Title</label>
-                    <input type="text" id="title" name="title" class="form-input" value="{{ product.title }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="category" class="form-label">Category</label>
-                    <select id="category" name="category" class="form-input">
-                        <option value="electronics" {% if product.category == 'electronics' %}selected{% endif %}>Electronics</option>
-                        <option value="books" {% if product.category == 'books' %}selected{% endif %}>Books</option>
-                        <option value="clothing" {% if product.category == 'clothing' %}selected{% endif %}>Clothing</option>
-                        <option value="home" {% if product.category == 'home' %}selected{% endif %}>Home Goods</option>
-                        <option value="other" {% if product.category == 'other' %}selected{% endif %}>Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" class="form-input" rows="4">{{ product.description }}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="price" class="form-label">Price ($)</label>
-                    <input type="number" step="0.01" id="price" name="price" class="form-input" value="{{ product.price }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="image" class="form-label">Image URL (Placeholder)</label>
-                    <input type="url" id="image" name="image" class="form-input" value="{{ product.image }}">
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-4">Update Listing</button>
-            </form>
+<div class="edit-product-container" style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="text-center mb-3">
+            <i class="fas fa-edit" style="font-size: 3rem; color: #4CAF50; margin-bottom: 1rem;"></i>
+            <h2 style="color: #2d5a27; margin-bottom: 0.5rem;">Edit Product</h2>
+            <p style="color: #666;">Update your product information</p>
         </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">
+                    <i class="fas fa-tag"></i> Product Title *
+                </label>
+                <input type="text" id="title" name="title" class="form-control" required 
+                       value="{{ product.title }}">
+            </div>
+
+            <div class="form-group">
+                <label for="category">
+                    <i class="fas fa-list"></i> Category *
+                </label>
+                <select id="category" name="category" class="form-control" required>
+                    <option value="">Select a category</option>
+                    <option value="Electronics" {% if product.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                    <option value="Clothing" {% if product.category == 'Clothing' %}selected{% endif %}>Clothing & Fashion</option>
+                    <option value="Books" {% if product.category == 'Books' %}selected{% endif %}>Books & Media</option>
+                    <option value="Home" {% if product.category == 'Home' %}selected{% endif %}>Home & Garden</option>
+                    <option value="Sports" {% if product.category == 'Sports' %}selected{% endif %}>Sports & Outdoors</option>
+                    <option value="Toys" {% if product.category == 'Toys' %}selected{% endif %}>Toys & Games</option>
+                    <option value="Automotive" {% if product.category == 'Automotive' %}selected{% endif %}>Automotive</option>
+                    <option value="Health" {% if product.category == 'Health' %}selected{% endif %}>Health & Beauty</option>
+                    <option value="Other" {% if product.category == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">
+                    <i class="fas fa-dollar-sign"></i> Price *
+                </label>
+                <input type="number" id="price" name="price" class="form-control" step="0.01" min="0" required 
+                       value="{{ product.price }}">
+            </div>
+
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-align-left"></i> Description
+                </label>
+                <textarea id="description" name="description" class="form-control" rows="4">{{ product.description or '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">
+                    <i class="fas fa-image"></i> Image URL
+                </label>
+                <input type="url" id="image" name="image" class="form-control" 
+                       value="{{ product.image or '' }}">
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                    <i class="fas fa-save"></i> Update Product
+                </button>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this product?')">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 {% endblock %}

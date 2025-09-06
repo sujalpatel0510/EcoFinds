@@ -1,28 +1,482 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block head %}
-    <title>Edit Profile</title>
+{% block title %}Edit Profile • EcoFinds{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-card {
+        max-width: 500px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: var(--gradient-green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 auto 1.5rem auto;
+        box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        position: relative;
+        cursor: pointer;
+        transition: var(--transition-base);
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+    }
+
+    .profile-avatar::after {
+        content: '\f007';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .profile-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-green);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .profile-subtitle {
+        color: #718096;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(76, 175, 80, 0.02);
+        border-radius: 16px;
+        border: 1px solid rgba(76, 175, 80, 0.1);
+    }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-green);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 1.1rem;
+        transition: var(--transition-base);
+    }
+
+    .form-control {
+        padding-left: 3rem;
+    }
+
+    .form-control:focus + .input-icon {
+        color: var(--primary-green);
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .strength-bar {
+        height: 3px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        margin-top: 0.25rem;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .strength-weak .strength-fill {
+        width: 25%;
+        background: #fc5c7d;
+    }
+
+    .strength-fair .strength-fill {
+        width: 50%;
+        background: #f093fb;
+    }
+
+    .strength-good .strength-fill {
+        width: 75%;
+        background: #4facfe;
+    }
+
+    .strength-strong .strength-fill {
+        width: 100%;
+        background: var(--gradient-green);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-update {
+        flex: 1;
+        min-width: 200px;
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-cancel {
+        flex: 0 0 auto;
+        min-width: 120px;
+        background: transparent;
+        color: #718096;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-cancel:hover {
+        background: #f7fafc;
+        border-color: #cbd5e0;
+        color: #4a5568;
+        transform: translateY(-2px);
+    }
+
+    .security-note {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.05), rgba(0, 242, 254, 0.05));
+        border: 1px solid rgba(79, 172, 254, 0.2);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .security-icon {
+        color: #4facfe;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+    }
+
+    .security-content h4 {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .security-content p {
+        color: #718096;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .last-updated {
+        text-align: center;
+        color: #a0aec0;
+        font-size: 0.85rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 480px) {
+        .profile-card {
+            margin: 0 1rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn-update,
+        .btn-cancel {
+            width: 100%;
+            min-width: auto;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+        
+        .profile-title {
+            font-size: 1.75rem;
+        }
+    }
+
+    /* Loading state for form */
+    .form-loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .form-loading .btn-update {
+        background: #a0aec0;
+        cursor: not-allowed;
+    }
+
+    .form-loading .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s linear infinite;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <div class="flex flex-col items-center py-20">
-        <div class="card p-8 w-full max-w-lg">
-            <h2 class="text-2xl font-bold text-center mb-6">Edit Your Profile</h2>
-            <form action="{{ url_for('edit_user', user_id=user.id) }}" method="POST">
-                <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-input" value="{{ user.username }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-input" value="{{ user.email }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter new password" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-4">Update Profile</button>
-            </form>
+<div class="profile-card">
+    <div class="card">
+        <div class="profile-header">
+            <div class="profile-avatar" title="Click to change avatar (coming soon!)">
+                {{ user.username[0].upper() if user.username else 'U' }}
+            </div>
+            <h1 class="profile-title">
+                <i class="fas fa-user-edit"></i>
+                Edit Profile
+            </h1>
+            <p class="profile-subtitle">Update your account information</p>
         </div>
+
+        <form method="post" action="{{ url_for('edit_user', user_id=user.id) }}" id="profileForm">
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="username">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="username"
+                            name="username" 
+                            value="{{ user.username }}" 
+                            class="form-control"
+                            required
+                            autocomplete="username"
+                            placeholder="Enter your username"
+                        >
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email"
+                            name="email" 
+                            value="{{ user.email }}" 
+                            class="form-control"
+                            required
+                            autocomplete="email"
+                            placeholder="Enter your email address"
+                        >
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Security Settings
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i>
+                        New Password
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password"
+                            name="password" 
+                            class="form-control"
+                            autocomplete="new-password"
+                            placeholder="Leave blank to keep current password"
+                        >
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    <div class="password-strength" id="passwordStrength" style="display: none;">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <span class="strength-text"></span>
+                    </div>
+                    <small style="color: #718096; margin-top: 0.5rem; display: block;">
+                        <i class="fas fa-info-circle"></i>
+                        Leave empty to keep your current password
+                    </small>
+                </div>
+            </div>
+
+            <div class="security-note">
+                <div class="security-icon">
+                    <i class="fas fa-shield-check"></i>
+                </div>
+                <div class="security-content">
+                    <h4>Security Notice</h4>
+                    <p>Your account data is encrypted and secure. We'll never share your information with third parties. If you change your password, you'll be logged out from all other devices.</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-update">
+                    <i class="fas fa-save"></i>
+                    Update Profile
+                </button>
+                <a href="{{ url_for('dashboard', user_id=user.id) }}" class="btn btn-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+
+            <div class="last-updated">
+                <i class="fas fa-clock"></i>
+                Profile last updated: {{ moment().format('MMMM DD, YYYY') if moment else 'Recently' }}
+            </div>
+        </form>
     </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('profileForm');
+    const passwordInput = document.getElementById('password');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const strengthBar = passwordStrength.querySelector('.strength-fill');
+    const strengthText = passwordStrength.querySelector('.strength-text');
+
+    // Password strength checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        
+        if (password.length === 0) {
+            passwordStrength.style.display = 'none';
+            return;
+        }
+        
+        passwordStrength.style.display = 'block';
+        const strength = calculatePasswordStrength(password);
+        
+        // Remove all strength classes
+        passwordStrength.className = 'password-strength';
+        
+        if (strength.score === 0) {
+            passwordStrength.classList.add('strength-weak');
+            strengthText.textContent = 'Weak password';
+        } else if (strength.score === 1) {
+            passwordStrength.classList.add('strength-fair');
+            strengthText.textContent = 'Fair password';
+        } else if (strength.score === 2) {
+            passwordStrength.classList.add('strength-good');
+            strengthText.textContent = 'Good password';
+        } else {
+            passwordStrength.classList.add('strength-strong');
+            strengthText.textContent = 'Strong password';
+        }
+    });
+
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('.btn-update');
+        const formCard = form.closest('.card');
+        
+        // Add loading state
+        formCard.classList.add('form-loading');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        
+        // Disable form elements
+        const inputs = form.querySelectorAll('input, button');
+        inputs.forEach(input => input.disabled = true);
+    });
+
+    // Input focus animations
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.form-group').style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.form-group').style.transform = 'translateY(0)';
+        });
+    });
+
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        
+        // Length check
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score++;
+        
+        // Character variety checks
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        
+        // Normalize to 0-3 scale
+        return {
+            score: Math.min(3, Math.floor(score / 2))
+        };
+    }
+});
+</script>
 {% endblock %}
