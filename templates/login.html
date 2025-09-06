@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EcoFinds</title>
+    <link rel="stylesheet" href="login-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Background Animation -->
+        <div class="background-animation">
+            <div class="floating-icon icon-1">
+                <i class="fas fa-recycle"></i>
+            </div>
+            <div class="floating-icon icon-2">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <div class="floating-icon icon-3">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="floating-icon icon-4">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="floating-icon icon-5">
+                <i class="fas fa-handshake"></i>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="auth-content">
+            <!-- Left Side - Welcome Back -->
+            <div class="auth-left">
+                <div class="welcome-section">
+                    <div class="logo-area">
+                        <div class="logo">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h1 class="brand-name">EcoFinds</h1>
+                        <p class="welcome-text">Welcome Back!</p>
+                    </div>
+                    
+                    <!-- User Testimonial -->
+                    <div class="testimonial">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <blockquote>
+                            "EcoFinds helped me find amazing second-hand treasures while making a positive impact on the environment. It's shopping with a purpose!"
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://via.placeholder.com/50x50/4CAF50/FFFFFF?text=SM" alt="Sarah M." class="author-avatar">
+                            <div class="author-info">
+                                <span class="author-name">Sarah M.</span>
+                                <span class="author-title">Eco Enthusiast</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span>8K+ Users</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>15K+ Items Sold</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-award"></i>
+                            <span>Best Marketplace 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Login Form -->
+            <div class="auth-right">
+                <div class="form-container">
+                    <!-- Header -->
+                    <div class="form-header">
+                        <h2>Sign In</h2>
+                        <p>Continue your sustainable journey</p>
+                    </div>
+                    
+                    <!-- Demo Credentials Info -->
+                    <div class="demo-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Demo: demo@ecofinds.com / password123</span>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <form class="login-form" id="loginForm">
+                        <!-- Email -->
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" required>
+                                <label for="email">Email Address</label>
+                                <div class="input-border"></div>
+                            </div>
+                            <div class="error-message" id="email-error"></div>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="password" name="password" required>
+                                <label for="password">Password</label>
+                                <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="input-border"></div>
+                            </div>
+                            <div class="error-message" id="password-error"></div>
+                        </div>
+                        
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-link">Forgot Password?</a>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Sign In</span>
+                            <span class="btn-loader">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                        
+                        <!-- Divider -->
+                        <div class="divider">
+                            <span>or continue with</span>
+                        </div>
+                        
+                        <!-- Social Login -->
+                        <div class="social-login">
+                            <button type="button" class="social-btn google-btn">
+                                <i class="fab fa-google"></i>
+                                <span>Google</span>
+                            </button>
+                            <button type="button" class="social-btn facebook-btn">
+                                <i class="fab fa-facebook-f"></i>
+                                <span>Facebook</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Sign Up Link -->
+                        <div class="form-footer">
+                            <p>New to EcoFinds? <a href="signup.html" class="link">Create Account</a></p>
+                        </div>
+                    </form>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="trust-badges">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>SSL Secured</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-lock"></i>
+                            <span>Privacy Protected</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>Verified Platform</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Welcome Back!</h3>
+            <p>You have successfully logged in. Redirecting to your dashboard...</p>
+            <div class="modal-loader">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="login-script.js"></script>
+</body>
+</html>
