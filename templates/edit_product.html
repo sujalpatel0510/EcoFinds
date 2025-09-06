@@ -11,7 +11,8 @@
             <p style="color: #666;">Update your product information</p>
         </div>
 
-        <form method="POST">
+        <!-- ✅ Enable file upload -->
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">
                     <i class="fas fa-tag"></i> Product Title *
@@ -53,12 +54,25 @@
                 <textarea id="description" name="description" class="form-control" rows="4">{{ product.description or '' }}</textarea>
             </div>
 
+            <!-- ✅ Image Upload (with current preview) -->
             <div class="form-group">
                 <label for="image">
-                    <i class="fas fa-image"></i> Image URL
+                    <i class="fas fa-image"></i> Product Image
                 </label>
-                <input type="url" id="image" name="image" class="form-control" 
-                       value="{{ product.image or '' }}">
+                
+                {% if product.image %}
+                    <div class="mb-2 text-center">
+                        <p style="color:#666; font-size:0.9rem;">Current Image:</p>
+                        <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+                             alt="Current Image" 
+                             style="max-width: 150px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                    </div>
+                {% endif %}
+                
+                <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                <small style="color: #666; font-size: 0.8rem;">
+                    Leave blank to keep current image
+                </small>
             </div>
 
             <div class="d-flex gap-2">

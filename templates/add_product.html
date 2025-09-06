@@ -11,7 +11,8 @@
             <p style="color: #666;">List your item and give it a new life</p>
         </div>
 
-        <form method="POST">
+        <!-- ✅ File upload enabled -->
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">
                     <i class="fas fa-tag"></i> Product Title *
@@ -54,18 +55,18 @@
                           placeholder="Describe your product's condition, features, and any other relevant details..."></textarea>
             </div>
 
+            <!-- ✅ Changed from URL to file upload -->
             <div class="form-group">
                 <label for="image">
-                    <i class="fas fa-image"></i> Image URL
+                    <i class="fas fa-image"></i> Upload Product Image
                 </label>
-                <input type="url" id="image" name="image" class="form-control" 
-                       placeholder="https://example.com/image.jpg (optional)">
+                <input type="file" id="image" name="image" class="form-control" accept="image/*">
                 <small style="color: #666; font-size: 0.8rem;">
-                    Tip: Upload your image to a service like Imgur and paste the direct link here
+                    Tip: Upload a clear, well-lit image of your product
                 </small>
             </div>
 
-            <input type="hidden" name="user_id" value="{{ session.user_id }}">
+            <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary" style="flex: 1;">
