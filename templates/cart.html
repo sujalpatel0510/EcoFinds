@@ -73,13 +73,10 @@
         <div class="cart-item">
           <!-- Product Image -->
           <div class="product-image-wrapper">
-            {# Normalize path and support full URLs #}
-            {% set raw = item.product.image if item.product.image else '' %}
-            {% set img = raw.lstrip('/') %}
-            {% if raw and (raw.startswith('http://') or raw.startswith('https://')) %}
-              <img src="{{ raw }}" alt="{{ item.product.title }}">
-            {% elif img %}
-              <img src="{{ url_for('static', filename=img) }}" alt="{{ item.product.title }}">
+            {% if item.product.image %}
+              <img src="{{ url_for('static', filename='uploads/' ~ item.product.image) }}" 
+                   alt="{{ item.product.title }}"
+                   onerror="this.src='{{ url_for('static', filename='uploads/default.png') }}';">
             {% else %}
               <i class="fas fa-image product-image-placeholder"></i>
             {% endif %}
