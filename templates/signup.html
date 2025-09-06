@@ -1,243 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - EcoFinds</title>
-    <link rel="stylesheet" href="signup-styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    <div class="auth-container">
-        <!-- Background Animation -->
-        <div class="background-animation">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="auth-content">
-            <!-- Left Side - Branding -->
-            <div class="auth-left">
-                <div class="brand-wrapper">
-                    <div class="logo-section">
-                        <div class="logo">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <h1 class="brand-name">EcoFinds</h1>
-                        <p class="brand-tagline">Discover. Reuse. Sustain.</p>
-                    </div>
-                    
-                    <!-- Environmental Impact Stats -->
-                    <div class="impact-section">
-                        <h3>Join the Movement</h3>
-                        <div class="impact-stats">
-                            <div class="stat">
-                                <span class="number">15K+</span>
-                                <span class="label">Items Saved</span>
-                            </div>
-                            <div class="stat">
-                                <span class="number">3.2M kg</span>
-                                <span class="label">CO₂ Reduced</span>
-                            </div>
-                            <div class="stat">
-                                <span class="number">8K+</span>
-                                <span class="label">Happy Users</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Features List -->
-                    <div class="features">
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure & Safe Trading</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-users"></i>
-                            <span>Trusted Community</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-handshake"></i>
-                            <span>Fair & Transparent</span>
-                        </div>
-                    </div>
+{% extends "base.html" %}
+
+{% block head %}
+    <title>EcoFinds - Sign Up</title>
+{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col items-center py-20">
+        <div class="card p-8 w-full max-w-sm">
+            <h2 class="text-2xl font-bold text-center mb-6">Sign Up for EcoFinds</h2>
+            <form action="{{ url_for('signup') }}" method="POST">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" required>
                 </div>
-            </div>
-            
-            <!-- Right Side - Sign Up Form -->
-            <div class="auth-right">
-                <div class="form-container">
-                    <!-- Header -->
-                    <div class="form-header">
-                        <h2>Join EcoFinds</h2>
-                        <p>Start your sustainable journey today and make a difference</p>
-                    </div>
-                    
-                    <!-- Sign Up Form -->
-                    <form class="signup-form" id="signupForm">
-                        <!-- Full Name -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="fullName" name="fullName" required>
-                                <label for="fullName">Full Name</label>
-                                <div class="input-border"></div>
-                            </div>
-                            <div class="error-message" id="fullName-error"></div>
-                        </div>
-                        
-                        <!-- Username -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-at input-icon"></i>
-                                <input type="text" id="username" name="username" required>
-                                <label for="username">Username</label>
-                                <div class="input-border"></div>
-                            </div>
-                            <div class="error-message" id="username-error"></div>
-                            <div class="input-hint">Choose a unique username for your profile</div>
-                        </div>
-                        
-                        <!-- Email -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-envelope input-icon"></i>
-                                <input type="email" id="email" name="email" required>
-                                <label for="email">Email Address</label>
-                                <div class="input-border"></div>
-                            </div>
-                            <div class="error-message" id="email-error"></div>
-                        </div>
-                        
-                        <!-- Phone Number -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-phone input-icon"></i>
-                                <input type="tel" id="phone" name="phone" required>
-                                <label for="phone">Phone Number</label>
-                                <div class="input-border"></div>
-                            </div>
-                            <div class="error-message" id="phone-error"></div>
-                        </div>
-                        
-                        <!-- Password -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-lock input-icon"></i>
-                                <input type="password" id="password" name="password" required>
-                                <label for="password">Create Password</label>
-                                <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <div class="input-border"></div>
-                            </div>
-                            
-                            <!-- Password Strength Indicator -->
-                            <div class="password-strength" id="passwordStrength">
-                                <div class="strength-bars">
-                                    <div class="bar"></div>
-                                    <div class="bar"></div>
-                                    <div class="bar"></div>
-                                    <div class="bar"></div>
-                                </div>
-                                <span class="strength-text">Password strength</span>
-                            </div>
-                            
-                            <div class="error-message" id="password-error"></div>
-                        </div>
-                        
-                        <!-- Confirm Password -->
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <i class="fas fa-lock input-icon"></i>
-                                <input type="password" id="confirmPassword" name="confirmPassword" required>
-                                <label for="confirmPassword">Confirm Password</label>
-                                <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <div class="input-border"></div>
-                            </div>
-                            <div class="error-message" id="confirmPassword-error"></div>
-                        </div>
-                        
-                        <!-- Terms and Conditions -->
-                        <div class="form-group">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="agreeTerms" required>
-                                <span class="checkmark"></span>
-                                <span class="checkbox-text">
-                                    I agree to the <a href="#" class="link">Terms of Service</a> 
-                                    and <a href="#" class="link">Privacy Policy</a>
-                                </span>
-                            </label>
-                        </div>
-                        
-                        <!-- Newsletter Subscription -->
-                        <div class="form-group">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="newsletter">
-                                <span class="checkmark"></span>
-                                <span class="checkbox-text">
-                                    Send me updates about new features and sustainability tips
-                                </span>
-                            </label>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <button type="submit" class="submit-btn">
-                            <span class="btn-text">Create My Account</span>
-                            <span class="btn-loader">
-                                <i class="fas fa-spinner fa-spin"></i>
-                            </span>
-                        </button>
-                        
-                        <!-- Divider -->
-                        <div class="divider">
-                            <span>or sign up with</span>
-                        </div>
-                        
-                        <!-- Social Login -->
-                        <div class="social-login">
-                            <button type="button" class="social-btn google-btn">
-                                <i class="fab fa-google"></i>
-                                <span>Google</span>
-                            </button>
-                            <button type="button" class="social-btn facebook-btn">
-                                <i class="fab fa-facebook-f"></i>
-                                <span>Facebook</span>
-                            </button>
-                        </div>
-                        
-                        <!-- Login Link -->
-                        <div class="form-footer">
-                            <p>Already have an account? <a href="login.html" class="link">Sign In</a></p>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full mt-4">Sign Up</button>
+            </form>
+            <p class="text-center mt-4 text-sm">Already have an account? <a href="{{ url_for('login') }}" class="text-gray-600 font-bold">Login</a></p>
         </div>
     </div>
-    
-    <!-- Success Modal -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal">
-            <div class="modal-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h3>Welcome to EcoFinds!</h3>
-            <p>Your account has been created successfully. Let's start your sustainable journey!</p>
-            <button class="modal-btn" onclick="window.location.href='login.html'">Continue to Login</button>
-        </div>
-    </div>
-    
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
-    
-    <script src="signup-script.js"></script>
-</body>
-</html>
+{% endblock %}

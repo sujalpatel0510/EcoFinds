@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Previous Purchases</title>
+{% endblock %}
+
+{% block content %}
+    <div class="my-10">
+        <h1 class="text-3xl font-bold mb-6 text-center">Your Previous Purchases</h1>
+        <div class="grid grid-cols-1 gap-6">
+            {% if purchases %}
+                {% for purchase in purchases %}
+                    <div class="card p-6 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <img src="{{ purchase.product.image if purchase.product.image else 'https://via.placeholder.com/80x80.png?text=Item' }}" alt="{{ purchase.product.title }}" class="w-20 h-20 rounded-lg object-cover">
+                            <div>
+                                <h3 class="font-bold text-lg">{{ purchase.product.title }}</h3>
+                                <p class="text-gray-600">${{ "%.2f"|format(purchase.product.price) }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Purchased on: {{ purchase.purchased_at.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-20">
+                    <p class="text-gray-500 text-xl">You have not made any purchases yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

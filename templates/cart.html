@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Your Cart</title>
+{% endblock %}
+
+{% block content %}
+    <div class="my-10">
+        <h1 class="text-3xl font-bold mb-6 text-center">Your Shopping Cart</h1>
+        <div class="grid grid-cols-1 gap-6">
+            {% if cart_items %}
+                {% for item in cart_items %}
+                    <div class="card p-6 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <img src="{{ item.product.image if item.product.image else 'https://via.placeholder.com/80x80.png?text=Item' }}" alt="{{ item.product.title }}" class="w-20 h-20 rounded-lg object-cover">
+                            <div>
+                                <h3 class="font-bold text-lg">{{ item.product.title }}</h3>
+                                <p class="text-gray-600">${{ "%.2f"|format(item.product.price) }}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="{{ url_for('purchase', user_id=user_id, product_id=item.product.id) }}" class="btn btn-primary">Purchase</a>
+                            <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" class="btn btn-danger">Remove</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-20">
+                    <p class="text-gray-500 text-xl">Your cart is empty.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

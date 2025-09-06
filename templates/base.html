@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EcoFinds{% endblock %}</title>
+    <style>
+        /* A utility-first CSS system for the hackathon project, all within one file. */
+        /* This approach centralizes styles to prevent duplication and ensure consistency. */
+        
+        /* Global Reset & Typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+       .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Layout Utilities */
+       .flex {
+            display: flex;
+        }
+       .flex-col {
+            flex-direction: column;
+        }
+       .items-center {
+            align-items: center;
+        }
+       .justify-between {
+            justify-content: space-between;
+        }
+       .gap-4 {
+            gap: 16px;
+        }
+       .grid {
+            display: grid;
+        }
+       .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        @media (min-width: 640px) {
+           .sm\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 768px) {
+           .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        
+        /* Components */
+       .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+       .btn-primary {
+            background-color: #4a5568;
+            color: #fff;
+        }
+       .btn-primary:hover {
+            background-color: #2d3748;
+        }
+       .btn-danger {
+            background-color: #e53e3e;
+            color: #fff;
+        }
+       .btn-danger:hover {
+            background-color: #c53030;
+        }
+       .btn-secondary {
+            background-color: #cbd5e0;
+            color: #2d3748;
+        }
+       .btn-secondary:hover {
+            background-color: #a0aec0;
+        }
+        
+       .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+       .card-body {
+            padding: 20px;
+        }
+        
+       .form-group {
+            margin-bottom: 20px;
+        }
+       .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+       .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+        }
+        
+        /* Header */
+       .header {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+       .header-logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: #4a5568;
+            text-decoration: none;
+        }
+       .header-nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: bold;
+        }
+        
+        /* Flash messages */
+       .flash-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+       .flash-success {
+            background-color: #c6f6d5;
+            color: #2f855a;
+        }
+       .flash-danger {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="header flex items-center justify-between">
+        <a href="{{ url_for('home') }}" class="header-logo">EcoFinds</a>
+        <nav class="header-nav">
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard', user_id=session['user_id']) }}">Dashboard</a>
+                <a href="{{ url_for('view_cart', user_id=session['user_id']) }}">Cart</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn btn-primary">Signup</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="text-center py-8">
+        <p>&copy; {{ now.year }} EcoFinds. All Rights Reserved.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

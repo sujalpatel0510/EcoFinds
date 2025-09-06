@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Marketplace – EcoFinds{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4>All Listings</h4>
+  <a href="{% url 'add_product' %}" class="btn btn-eco">+ Add Product</a>
+</div>
+<div class="row mb-3">
+  <div class="col-md-3">
+    <select class="form-select" onchange="location = this.value;">
+      <option value="{% url 'feed' %}">All Categories</option>
+      {% for cat in categories %}
+        <option value="{% url 'feed' %}?cat={{ cat.id }}" {% if request.GET.cat == cat.id|stringformat:"s" %}selected{% endif %}>
+          {{ cat.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+<div class="row g-4">
+  {% for product in products %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="card card-elev">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top">
+        {% else %}
+          <div class="placeholder-img">No Image</div>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ product.title }}</h5>
+          <p class="price">${{ product.price }}</p>
+          <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-eco">View</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No products found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

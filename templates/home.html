@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>EcoFinds - Marketplace</title>
+{% endblock %}
+
+{% block content %}
+    <header class="py-8 text-center">
+        <h1 class="text-3xl font-bold">Discover Sustainable Finds</h1>
+        <div class="flex items-center gap-4 mt-4">
+            <input type="text" class="form-input flex-1" placeholder="Search for products...">
+            <select class="form-input">
+                <option value="">All Categories</option>
+                <option value="clothing">Clothing</option>
+                <option value="electronics">Electronics</option>
+                <option value="books">Books</option>
+            </select>
+            <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Product</a>
+        </div>
+    </header>
+
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
+        {% for product in products %}
+            <div class="card">
+                <img src="{{ product.image if product.image else 'https://via.placeholder.com/400x300.png?text=Product+Image' }}" alt="{{ product.title }}" class="w-full h-48 object-cover">
+                <div class="card-body">
+                    <h3 class="font-bold text-lg">{{ product.title }}</h3>
+                    <p class="text-gray-600 mt-1">${{ "%.2f"|format(product.price) }}</p>
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary block mt-4">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

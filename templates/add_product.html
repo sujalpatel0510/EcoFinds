@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Add New Product</title>
+{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col items-center py-10">
+        <div class="card p-8 w-full max-w-xl">
+            <h2 class="text-2xl font-bold text-center mb-6">Add New Product</h2>
+            <form action="{{ url_for('add_product') }}" method="POST">
+                <div class="form-group">
+                    <label for="title" class="form-label">Product Title</label>
+                    <input type="text" id="title" name="title" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="category" class="form-input">
+                        <option value="electronics">Electronics</option>
+                        <option value="books">Books</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="home">Home Goods</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-input" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price" class="form-label">Price ($)</label>
+                    <input type="number" step="0.01" id="price" name="price" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="form-label">Image URL (Placeholder)</label>
+                    <input type="url" id="image" name="image" class="form-input">
+                </div>
+                <input type="hidden" name="user_id" value="{{ session.get('user_id') }}">
+                <button type="submit" class="btn btn-primary w-full mt-4">Submit Listing</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

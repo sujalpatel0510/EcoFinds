@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Edit {{ product.title }}</title>
+{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col items-center py-10">
+        <div class="card p-8 w-full max-w-xl">
+            <h2 class="text-2xl font-bold text-center mb-6">Edit Product: {{ product.title }}</h2>
+            <form action="{{ url_for('edit_product', product_id=product.id) }}" method="POST">
+                <div class="form-group">
+                    <label for="title" class="form-label">Product Title</label>
+                    <input type="text" id="title" name="title" class="form-input" value="{{ product.title }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="category" class="form-input">
+                        <option value="electronics" {% if product.category == 'electronics' %}selected{% endif %}>Electronics</option>
+                        <option value="books" {% if product.category == 'books' %}selected{% endif %}>Books</option>
+                        <option value="clothing" {% if product.category == 'clothing' %}selected{% endif %}>Clothing</option>
+                        <option value="home" {% if product.category == 'home' %}selected{% endif %}>Home Goods</option>
+                        <option value="other" {% if product.category == 'other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-input" rows="4">{{ product.description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price" class="form-label">Price ($)</label>
+                    <input type="number" step="0.01" id="price" name="price" class="form-input" value="{{ product.price }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="form-label">Image URL (Placeholder)</label>
+                    <input type="url" id="image" name="image" class="form-input" value="{{ product.image }}">
+                </div>
+                <button type="submit" class="btn btn-primary w-full mt-4">Update Listing</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

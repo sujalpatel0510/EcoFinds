@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>{{ product.title }}</title>
+{% endblock %}
+
+{% block content %}
+    <div class="my-10">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">← Back to Listings</a>
+        <div class="card p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img src="{{ product.image if product.image else 'https://via.placeholder.com/600x400.png?text=Product+Image' }}" alt="{{ product.title }}" class="w-full h-auto rounded-lg">
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold">{{ product.title }}</h1>
+                    <p class="text-gray-600 mt-2">Category: <span class="font-bold">{{ product.category }}</span></p>
+                    <p class="text-2xl font-bold mt-4">${{ "%.2f"|format(product.price) }}</p>
+                    <p class="text-gray-800 mt-4">{{ product.description }}</p>
+                    
+                    <div class="mt-6 flex gap-4">
+                        {% if session.get('user_id') %}
+                            <a href="{{ url_for('add_to_cart', user_id=session['user_id'], product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
+                            <a href="{{ url_for('purchase', user_id=session['user_id'], product_id=product.id) }}" class="btn btn-secondary">Buy Now</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">Login to Add to Cart</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-200">
+                <p class="text-lg font-bold">Listed by: {{ product.owner.username }}</p>
+                {% if session.get('user_id') == product.user_id %}
+                    <div class="mt-4 flex gap-4">
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-secondary">Edit Product</a>
+                        <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-danger">Delete Product</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
