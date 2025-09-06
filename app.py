@@ -1,10 +1,10 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import os
 
 # -------------------------
 # Flask Setup
@@ -14,19 +14,22 @@ app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:8511@localhost/ecofindsdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Upload Config
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+# -------------------------
+# File upload configuration
+# -------------------------
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Create uploads folder if not exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# -------------------------
+# Database & Migrations
+# -------------------------
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-# -------------------------
-# Helpers
-# -------------------------
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # -------------------------
 # Context Processor
@@ -34,6 +37,20 @@ def allowed_file(filename):
 @app.context_processor
 def inject_now():
     return {'now': datetime.utcnow()}
+
+# -------------------------
+# Helpers
+# -------------------------
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_image(file):
+    """Save uploaded image file and return filename. If none, return None."""
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return filename
+    return None
 
 # -------------------------
 # Models
@@ -58,7 +75,7 @@ class Product(db.Model):
     description = db.Column(db.Text)
     category = db.Column(db.String(50))
     price = db.Column(db.Float, nullable=False)
-    image = db.Column(db.String(200))
+    image = db.Column(db.String(200), default='default.png')  # filename only
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -85,11 +102,13 @@ class Purchase(db.Model):
     user = db.relationship('User', back_populates='purchases')
     product = db.relationship('Product')
 
+
 # -------------------------
 # Create tables at startup
 # -------------------------
 with app.app_context():
     db.create_all()
+
 
 # -------------------------
 # Routes
@@ -98,6 +117,7 @@ with app.app_context():
 def home():
     products = Product.query.all()
     return render_template('home.html', products=products)
+
 
 # ---------- AUTH ----------
 @app.route('/signup', methods=['GET', 'POST'])
@@ -126,6 +146,7 @@ def signup():
 
     return render_template('signup.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -142,17 +163,20 @@ def login():
 
     return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     flash("Logged out successfully", "success")
     return redirect(url_for('login'))
 
+
 # ---------- DASHBOARD ----------
 @app.route('/dashboard/<int:user_id>')
 def dashboard(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('dashboard.html', user=user)
+
 
 @app.route('/dashboard/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
@@ -168,16 +192,13 @@ def edit_user(user_id):
         return redirect(url_for('dashboard', user_id=user.id))
     return render_template('edit_user.html', user=user)
 
+
 # ---------- PRODUCTS ----------
 @app.route('/product/add', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
-        file = request.files.get('image')
-        filename = None
-
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image_file = request.files.get('image')
+        filename = save_image(image_file) or 'default.png'
 
         product = Product(
             title=request.form['title'],
@@ -193,10 +214,12 @@ def add_product():
         return redirect(url_for('home'))
     return render_template('add_product.html')
 
+
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('product_detail.html', product=product)
+
 
 @app.route('/product/<int:product_id>/edit', methods=['GET', 'POST'])
 def edit_product(product_id):
@@ -207,16 +230,16 @@ def edit_product(product_id):
         product.category = request.form['category']
         product.price = float(request.form['price'])
 
-        file = request.files.get('image')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image_file = request.files.get('image')
+        filename = save_image(image_file)
+        if filename:
             product.image = filename
 
         db.session.commit()
         flash("Product updated!", "success")
         return redirect(url_for('product_detail', product_id=product.id))
     return render_template('edit_product.html', product=product)
+
 
 @app.route('/product/<int:product_id>/delete')
 def delete_product(product_id):
@@ -225,6 +248,7 @@ def delete_product(product_id):
     db.session.commit()
     flash("Product deleted!", "danger")
     return redirect(url_for('home'))
+
 
 # ---------- CART ----------
 @app.route('/cart/<int:user_id>')
@@ -238,6 +262,7 @@ def view_cart(user_id):
 
     return render_template('cart.html', cart_items=cart_items, user_id=user_id, total_price=total_price)
 
+
 @app.route('/cart/add/<int:user_id>/<int:product_id>')
 def add_to_cart(user_id, product_id):
     item = Cart(user_id=user_id, product_id=product_id)
@@ -245,6 +270,7 @@ def add_to_cart(user_id, product_id):
     db.session.commit()
     flash("Product added to cart!", "success")
     return redirect(url_for('view_cart', user_id=user_id))
+
 
 @app.route('/cart/remove/<int:item_id>')
 def remove_from_cart(item_id):
@@ -254,6 +280,7 @@ def remove_from_cart(item_id):
     db.session.commit()
     flash("Removed from cart!", "danger")
     return redirect(url_for('view_cart', user_id=user_id))
+
 
 # ---------- PURCHASES ----------
 @app.route('/purchase/<int:user_id>/<int:product_id>')
@@ -265,6 +292,7 @@ def purchase(user_id, product_id):
     flash("Purchase successful!", "success")
     return redirect(url_for('view_purchases', user_id=user_id))
 
+
 @app.route('/purchases/<int:user_id>')
 def view_purchases(user_id):
     if 'user_id' not in session or session['user_id'] != user_id:
@@ -274,10 +302,9 @@ def view_purchases(user_id):
     purchases = Purchase.query.filter_by(user_id=user_id).all()
     return render_template('purchases.html', purchases=purchases, user_id=user_id)
 
+
 # -------------------------
 # Run App
 # -------------------------
 if __name__ == '__main__':
-    # Ensure upload folder exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(debug=True)

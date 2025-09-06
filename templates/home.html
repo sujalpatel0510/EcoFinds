@@ -44,11 +44,15 @@
         <div class="product-grid">
             {% for product in products %}
                 <div class="product-card">
-                    <div class="product-image">
+                    <div class="product-image" style="height: 200px; overflow: hidden; border-radius: 8px;">
                         {% if product.image %}
-                            <img src="{{ product.image }}" alt="{{ product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+                                 alt="{{ product.title }}" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
                         {% else %}
-                            <i class="fas fa-image"></i>
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" 
+                                 alt="No image available"
+                                 style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
                         {% endif %}
                     </div>
                     <div class="product-info">

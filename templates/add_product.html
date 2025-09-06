@@ -55,7 +55,7 @@
                           placeholder="Describe your product's condition, features, and any other relevant details..."></textarea>
             </div>
 
-            <!-- ✅ Changed from URL to file upload -->
+            <!-- ✅ Changed from URL to File Upload -->
             <div class="form-group">
                 <label for="image">
                     <i class="fas fa-image"></i> Upload Product Image
@@ -78,6 +78,15 @@
             </div>
         </form>
     </div>
+
+    <!-- ✅ Preview Uploaded Image (only if validation fails and user re-submits) -->
+    {% if product and product.image %}
+    <div class="card mt-3 text-center">
+        <h5>Current Image:</h5>
+        <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+             alt="Product Image" style="max-width:200px; border:1px solid #ddd; border-radius:8px;">
+    </div>
+    {% endif %}
 
     <!-- Tips Section -->
     <div class="card mt-3" style="background: rgba(76, 175, 80, 0.05);">
